@@ -1,0 +1,32 @@
+
+modLoader="javafml" #mandatory
+# A version range to match for said mod loader - for regular FML @Mod it will be the forge version
+loaderVersion="[35,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+# The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
+# Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
+license="All rights reserved"
+# A list of mods - how many allowed here is determined by the individual mod loader
+[[mods]] #mandatory
+# The modid of the mod
+modId="${project.modId}" #mandatory
+version="${project.version}" #mandatory
+ # A display name for the mod
+displayName="${project.name}" #mandatory
+
+# A text field displayed in the mod UI
+authors="Austin Mayes" #optional
+# The description text for the mod (multi line!) (#mandatory)
+description='''
+Mod to show the keys you are currently pressing
+
+Use "z" to open the on-screen editor which allows you to move each key box to wherever you want.
+
+You can enable additional key displays in the mod's config file.
+'''
+
+[[dependencies.examplemod]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.4,1.17)"
+    ordering="NONE"
+    side="BOTH"

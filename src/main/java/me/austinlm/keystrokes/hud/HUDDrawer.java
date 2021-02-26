@@ -112,7 +112,10 @@ public class HUDDrawer {
 		// Move to the key's locaion
 		GL46.glTranslated(key.getLocation().getX(), key.getLocation().getY(), 0.0);
 		// background color
-		GL46.glColor4f(this.bgRed, this.bgGreen, this.bgBlue, alpha);
+		GL46.glColor4f((float) this.bgRed / 255,
+				(float) this.bgGreen / 255,
+				(float) this.bgBlue / 255,
+				alpha);
 		setGLProps(true);
 		// Draw the box
 		GL46.glVertex2d(0.0, height); // Top left

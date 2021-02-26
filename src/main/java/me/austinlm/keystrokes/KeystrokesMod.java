@@ -1,8 +1,8 @@
 package me.austinlm.keystrokes;
 
-import com.google.common.collect.Sets;
-import java.util.Set;
-import me.austinlm.keystrokes.gui.EditGui;
+import com.google.common.collect.Lists;
+import java.util.List;
+import me.austinlm.keystrokes.gui.SettingsGui;
 import me.austinlm.keystrokes.hud.HUDDrawer;
 import me.austinlm.keystrokes.hud.Key;
 import me.austinlm.keystrokes.hud.KeyType;
@@ -30,9 +30,9 @@ public class KeystrokesMod {
 
 	public static KeystrokesMod INSTANCE;
 	// 90 = Z
-	private final KeyBinding openGui = new KeyBinding("Open GUI", 90, "Keystrokes");
+	private final KeyBinding openSettings = new KeyBinding("Open Settings", 90, "Keystrokes");
 	private final HUDDrawer hudDrawer = new HUDDrawer();
-	private final Set<Key> keys = Sets.newHashSet();
+	private final List<Key> keys = Lists.newArrayList();
 	// CPS Trackers
 	private final ActionCounter attackCount = new ActionCounter(1000);
 	private final ActionCounter useCount = new ActionCounter(1000);
@@ -48,7 +48,7 @@ public class KeystrokesMod {
 
 		// Create config spec
 		ForgeConfigSpec.Builder builder = new Builder();
-		KeystrokesConfig.createSpec(builder, this.keys);
+		KeystrokesConfig.createSpec(builder, this);
 		ModLoadingContext.get().registerConfig(Type.CLIENT, builder.build());
 
 		// Load config
@@ -62,13 +62,13 @@ public class KeystrokesMod {
 
 	private void loadingFinished(ModConfigEvent event) {
 		config = event.getConfig();
-		KeystrokesConfig.load(config, this.keys);
+		KeystrokesConfig.load(config, this);
 
-		ClientRegistry.registerKeyBinding(openGui);
+		ClientRegistry.registerKeyBinding(openSettings);
 	}
 
 	public void saveConfig() {
-		KeystrokesConfig.saveState(config, this.keys);
+		KeystrokesConfig.saveState(config, this);
 		config.save();
 	}
 
@@ -89,8 +89,8 @@ public class KeystrokesMod {
 
 	private void incrementKeyClicks(KeyInputEvent event) {
 		// Open the edit GUI
-		if (openGui.isPressed()) {
-			Minecraft.getInstance().displayGuiScreen(new EditGui(this.keys, this.hudDrawer));
+		if (openSettings.isPressed()) {
+			Minecraft.getInstance().displayGuiScreen(new SettingsGui(this.keys, this.hudDrawer));
 		}
 		incrementClicks(event, event.getAction());
 	}
@@ -121,7 +121,11 @@ public class KeystrokesMod {
 		return useCount.getActionsInPeriod();
 	}
 
-	public Set<Key> getKeys() {
+	public List<Key> getKeys() {
 		return keys;
+	}
+
+	public HUDDrawer getHudDrawer() {
+		return hudDrawer;
 	}
 }

@@ -1,5 +1,6 @@
 package me.austinlm.keystrokes.hud;
 
+import com.electronwill.nightconfig.core.CommentedConfig;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -12,6 +13,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import org.lwjgl.opengl.GL46;
@@ -30,6 +32,11 @@ public class HUDDrawer {
 	// Paddings to add on each side of the box
 	private static final float PADDING_X = 10f;
 	private static final float PADDING_Y = 6f;
+
+	private int bgRed = 0;
+	private int bgGreen = 0;
+	private int bgBlue = 0;
+	private Color textColor = Color.WHITE;
 
 	@SubscribeEvent
 	public void onDraw(RenderGameOverlayEvent.Post event) {
@@ -101,11 +108,11 @@ public class HUDDrawer {
 		// Needed for drag check
 		key.setDimensions(width, height);
 
-		float color = key.getType().getBinding().isKeyDown() ? 0.4f : 0.2f;
+		float alpha = key.getType().getBinding().isKeyDown() ? 1f : 0.5f;
 		// Move to the key's locaion
 		GL46.glTranslated(key.getLocation().getX(), key.getLocation().getY(), 0.0);
 		// background color
-		GL46.glColor4f(color, color, color, 0.6f);
+		GL46.glColor4f(this.bgRed, this.bgGreen, this.bgBlue, alpha);
 		setGLProps(true);
 		// Draw the box
 		GL46.glVertex2d(0.0, height); // Top left
@@ -128,7 +135,7 @@ public class HUDDrawer {
 				x = x + x * (INFO_SCALE / 2); // Re-center
 			}
 			// Component render
-			minecraft.fontRenderer.func_243246_a(matrixStack, component, x, y, Color.GREEN.getRGB());
+			minecraft.fontRenderer.func_243246_a(matrixStack, component, x, y, this.textColor.getRGB());
 			// Calculate next line's height
 			float textHeight = minecraft.fontRenderer.FONT_HEIGHT;
 			// Larger height
@@ -139,6 +146,93 @@ public class HUDDrawer {
 			GL46.glPopMatrix();
 			// TODO: Multiple headers?
 			header = false;
+		}
+	}
+
+	// BEGIN COLOR METHODS
+	// These are all separate for easy reference in the settings class
+
+	public int getBgRed() {
+		return bgRed;
+	}
+
+	public void setBgRed(int bgRed) {
+		this.bgRed = bgRed;
+	}
+
+	public int getBgGreen() {
+		return bgGreen;
+	}
+
+	public void setBgGreen(int bgGreen) {
+		this.bgGreen = bgGreen;
+	}
+
+	public int getBgBlue() {
+		return bgBlue;
+	}
+
+	public void setBgBlue(int bgBlue) {
+		this.bgBlue = bgBlue;
+	}
+
+	public int getTextRed() {
+		return this.textColor.getRed();
+	}
+
+	public void setTextRed(int red) {
+		this.textColor = new Color(red, this.textColor.getGreen(), this.textColor.getBlue());
+	}
+
+	public int getTextGreen() {
+		return this.textColor.getGreen();
+	}
+
+	public void setTextGreen(int green) {
+		this.textColor = new Color(this.textColor.getRed(), green, this.textColor.getBlue());
+	}
+
+	public int getTextBlue() {
+		return this.textColor.getBlue();
+	}
+
+	public void setTextBlue(int blue) {
+		this.textColor = new Color(this.textColor.getRed(), this.textColor.getGreen(), blue);
+	}
+
+	// END COLOR METHODS
+
+	/**
+	 * Creates config spec used for loading.saving colors
+	 */
+	public void createSpec(ForgeConfigSpec.Builder builder) {
+		builder.push("colors");
+		builder.define("background", new Color(this.bgRed, this.bgGreen, this.bgBlue).getRGB());
+		builder.define("text", this.textColor.getRGB());
+		builder.pop();
+	}
+
+	/**
+	 * Save colors to config
+	 */
+	public void saveDate(CommentedConfig config) {
+		config.set("colors.background", new Color(this.bgRed, this.bgGreen, this.bgBlue).getRGB());
+		config.set("colors.text", this.textColor.getRGB());
+	}
+
+	/**
+	 * Load colors from config
+	 */
+	public void loadData(CommentedConfig config) {
+		if (config.contains("colors.background")) {
+			Color bgColor = new Color(config.get("colors.background"));
+			this.bgRed = bgColor.getRed();
+			this.bgGreen = bgColor.getGreen();
+			this.bgBlue = bgColor.getBlue();
+		}
+
+		if (config.contains("colors.text")) {
+			this.textColor = new Color(config.get("colors.text"));
 		}
 	}
 }

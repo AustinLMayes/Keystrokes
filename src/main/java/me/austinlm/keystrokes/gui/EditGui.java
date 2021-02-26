@@ -1,8 +1,8 @@
 package me.austinlm.keystrokes.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import me.austinlm.keystrokes.KeystrokesMod;
 import me.austinlm.keystrokes.hud.HUDDrawer;
 import me.austinlm.keystrokes.hud.Key;
@@ -15,12 +15,12 @@ import net.minecraft.util.text.StringTextComponent;
  */
 public class EditGui extends Screen {
 
-	private final Set<Key> keys;
+	private final List<Key> keys;
 	private final HUDDrawer drawer;
 	// Current key being dragged by the user
 	private Optional<Key> draggingKey = Optional.empty();
 
-	public EditGui(Set<Key> keys, HUDDrawer drawer) {
+	public EditGui(List<Key> keys, HUDDrawer drawer) {
 		super(new StringTextComponent(""));
 		this.keys = keys;
 		this.drawer = drawer;

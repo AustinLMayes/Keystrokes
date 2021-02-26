@@ -19,9 +19,7 @@ authors="Austin Mayes" #optional
 description='''
 Mod to show the keys you are currently pressing
 
-Use "z" to open the on-screen editor which allows you to move each key box to wherever you want.
-
-You can enable additional key displays in the mod's config file.
+Use "z" to open the settings menu.
 '''
 
 [[dependencies.examplemod]]
